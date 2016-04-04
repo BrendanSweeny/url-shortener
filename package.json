@@ -1,0 +1,13 @@
+{
+  "name": "url-shortener",
+  "version": "0.0.0",
+  "description": "A simple url shortener microservice",
+  "main": "server.js",
+  "repository": "",
+  "author": "Brendan Sweeny",
+  "dependencies": {
+    "async": "~0.2.8",
+    "express": "^4.13.4",
+    "socket.io": "~0.9.14"
+  }
+}
