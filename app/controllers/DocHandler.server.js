@@ -1,5 +1,7 @@
 "use strict";
 
+var validator = require("validator");
+
 module.exports = DocHandler;
 
 //Constructor function that handles url document lookup and creation
@@ -46,7 +48,7 @@ function DocHandler(db) {
                     if (err) {throw err;}
                     
                     var doc = result;
-                    callback(doc);
+                    return callback(doc);
                 });
 
             });
@@ -56,21 +58,31 @@ function DocHandler(db) {
     //if not found, calls generateDoc()
     this.lookUpDoc = function(originalUrl, callback) {
         
+        //If invalid URL is passed: json with error is passed to callback
+        if (!validator.isURL(originalUrl)) {
+            return callback({"error": "Invalid URL Format"});
+        }
+        
+        //Remove tailing backslash to prevent unnecessary duplicate urls
+        if (originalUrl[originalUrl.length - 1] === "/") {
+            originalUrl = originalUrl.slice(0, originalUrl.length - 1);
+        }
+        
         //Mongo document search by original url
         urls.findOne({
             "original_url": originalUrl
         }, urlProjection, function(err, result) {
             if (err) {throw err;}
             
-            //If there is a result document, callback function is called
+            //If a doc is matched it is passed to the callback
             if (result) {
-                callback(result);
+                return callback(result);
             
             //If there is no result document, generateDoc() is called
             //and the created document is passed to the callback
             } else {
                 generateDoc(originalUrl, function(doc) {
-                    callback(doc);
+                    return callback(doc);
                 });
                 
             }
@@ -87,7 +99,9 @@ function DocHandler(db) {
         }
     }
     
-    this.redirectUrl = function(path, res, callback) {
+    //Searches db by path number and passes original url of 
+    //matched doc to callback
+    this.redirectUrl = function(path, callback) {
         
         if (validPath(path)) {
             
@@ -97,12 +111,12 @@ function DocHandler(db) {
             urls.findOne({"path": path}, {_id: false, path: false, short_url: false}, function(err, doc) {
                 if (err) {throw err;}
                 if (doc) {
-                    callback(doc.original_url);
+                    return callback(doc.original_url);
                 }
             });
             
         } else {
-            callback("Invalid path");
+            return callback("Invalid path");
         }
         
         
