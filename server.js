@@ -14,7 +14,7 @@ mongo.connect("mongodb://localhost:27017/urlparser", function(err, db) {
     
     routes(app, db);
     
-    app.listen(8080, function() {
+    app.listen(process.env.PORT || 8080, function() {
       console.log("Server listening on PORT 8080...");
     })
     

@@ -32,7 +32,7 @@ function DocHandler(db) {
             //Callback:
             function(err, result) {
                 if (err) {throw err;}
-                //The highest path number
+                //The highest current path number
                 var currentId = result.value.currentId;
                 path = currentId.toString();
                 
@@ -56,11 +56,14 @@ function DocHandler(db) {
     
     //Searches db by url. If found, sends JSON
     //if not found, calls generateDoc()
-    this.lookUpDoc = function(originalUrl, callback) {
+    this.lookUpDoc = function(req, res) {
+        
+        var originalUrl = req.query.url;
         
         //If invalid URL is passed: json with error is passed to callback
         if (!validator.isURL(originalUrl)) {
-            return callback({"error": "Invalid URL Format"});
+            res.json({"error": "Invalid URL Format"});
+            return;
         }
         
         //Remove tailing backslash to prevent unnecessary duplicate urls
@@ -76,13 +79,15 @@ function DocHandler(db) {
             
             //If a doc is matched it is passed to the callback
             if (result) {
-                return callback(result);
+                res.json(result);
+                return;
             
             //If there is no result document, generateDoc() is called
             //and the created document is passed to the callback
             } else {
                 generateDoc(originalUrl, function(doc) {
-                    return callback(doc);
+                    res.json(doc);
+                    return;
                 });
                 
             }
@@ -101,8 +106,9 @@ function DocHandler(db) {
     
     //Searches db by path number and passes original url of 
     //matched doc to callback
-    this.redirectUrl = function(path, callback) {
+    this.redirectUrl = function(path, res) {
         
+        //Path validation
         if (validPath(path)) {
             
             //findOne is used because findOne() returns the document
@@ -110,15 +116,31 @@ function DocHandler(db) {
             //when no matching document is found for input path
             urls.findOne({"path": path}, {_id: false, path: false, short_url: false}, function(err, doc) {
                 if (err) {throw err;}
+                
+                //If doc is matched, protocol is added if necessary and browser
+                //is redirected
                 if (doc) {
-                    return callback(doc.original_url);
+                    if (doc.original_url.indexOf("http") === -1) {
+                        res.redirect("http://" + doc.original_url);
+                        return;
+                    } else {
+                        res.redirect(doc.original_url);
+                        return;
+                    }
+                
+                //If no doc is matched (e.g. path integer is too high),
+                //"Invalid path" is sent
+                } else {
+                    res.json({"error": "Invalid path"});
+                    return;
                 }
             });
-            
-        } else {
-            return callback("Invalid path");
-        }
         
+        //"Invalid path" is sent if path is not validated
+        } else {
+            res.json({"error": "Invalid path"});
+            return;
+        }
         
     };
     
