@@ -8,6 +8,7 @@
   "dependencies": {
     "async": "~0.2.8",
     "express": "^4.13.4",
-    "socket.io": "~0.9.14"
+    "socket.io": "~0.9.14",
+    "validator": "^5.2.0"
   }
 }
