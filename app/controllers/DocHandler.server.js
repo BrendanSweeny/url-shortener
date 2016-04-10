@@ -16,7 +16,7 @@ function DocHandler(db) {
     //each time a url document is created
     function generateDoc(originalUrl, callback) {
         
-        var host = "https://url-shortener-brendansweeny.c9users.io/";
+        var host = "https://terse-url.herokuapp.com/";
         var path;
         
         //Finds and increments the currentId property of urlIdGenerator document
