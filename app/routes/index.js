@@ -18,7 +18,7 @@ function routes(app, db) {
             
         //If no url query is passed to host, homepage is sent
         } else {
-            res.send("Hello World");
+            res.sendFile(process.cwd() + "/public/index.html");
         }
         
     });

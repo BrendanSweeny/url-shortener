@@ -1,0 +1,31 @@
+<!DOCTYPE HTML>
+
+<head>
+    <title>Terse-URL Microservice</title>
+    <link href='' rel=''>
+</head>
+<body>
+    <h1>URL Shortener Microservice</h1>
+    <h4>Built with Node.js, Express.js, and MongoDB</h4>
+    <blockquote>
+        <h3>User Stories:</h3>
+        <ol>
+            <li>A URL can be passed as a query in order to receive a shortened
+            URL as a JSON response</li>
+            <li>If an invalid URL is passed, a JSON with an error will be received</li>
+            <li>The shortened URL will redirect to the original link</li>
+        </ol>
+    </blockquote>
+    <h2>Example Input:</h2>
+    <blockquote>
+        <code>https://terse-url.herokuapp.com/?url=www.google.com</code><br>
+        <code>{"original_url":"www.google.com","short_url":"https://terse-url.herokuapp.com/2"}</code>
+    </blockquote>
+    <h2>Usage:</h2>
+    <blockquote>
+        <h3>Short URL:</h3>
+        <code>https://terse-url.herokuapp.com/2</code>
+        <h3>Redirects to:</h3>
+        <code>https://www.google.com/</code>
+    </blockquote>
+</body>
