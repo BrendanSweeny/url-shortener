@@ -1,0 +1,10 @@
+body {
+    color: green;
+    font-family: sans-serif;
+}
+
+code {
+    color: darkred;
+    background-color: #EFEFEF;
+    border-radius: 2px;
+}
